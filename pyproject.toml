@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "abkit"
+version = "0.2.0"
+description = "Production-grade A/B testing framework with CUPED, mSPRT, guardrails, and HTML reports"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Sudiksha Acharya", email = "sudiksha.acharyaa7@gmail.com" }
+]
+keywords = [
+    "a/b testing", "experimentation", "statistics", "causal inference",
+    "CUPED", "sequential testing", "mSPRT", "data science"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "scipy>=1.11.0",
+    "numpy>=1.25.0",
+    "pandas>=2.0.0",
+    "statsmodels>=0.14.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "mypy>=1.5.0",
+    "build>=1.0.0",
+    "twine>=4.0.0",
+]
+notebooks = [
+    "jupyter>=1.0.0",
+    "ipykernel>=6.0.0",
+]
+
+[project.urls]
+Homepage      = "https://github.com/sudikshaacharya1/ab-testing-framework"
+Repository    = "https://github.com/sudikshaacharya1/ab-testing-framework"
+Issues        = "https://github.com/sudikshaacharya1/ab-testing-framework/issues"
+Changelog     = "https://github.com/sudikshaacharya1/ab-testing-framework/blob/main/CHANGELOG.md"
+
+[project.scripts]
+abkit = "abkit.experiment:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["abkit*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts   = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true

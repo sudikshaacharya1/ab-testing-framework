@@ -4,7 +4,7 @@ Tests for power analysis utilities (src/stats/power.py).
 
 import numpy as np
 import pytest
-from src.stats.power import (
+from abkit.stats.power import (
     required_sample_size,
     minimum_detectable_effect,
     relative_mde,

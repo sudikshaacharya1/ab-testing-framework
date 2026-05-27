@@ -1,6 +1,10 @@
-# A/B Testing Framework
+# abkit — A/B Testing Framework
 
 > Production-grade experimentation infrastructure with statistical guardrails — built for teams that want to move fast without breaking metrics.
+
+```bash
+pip install abkit
+```
 
 ---
 
@@ -34,11 +38,35 @@ This framework exists to close that gap. It gives any team the same statistical 
 ## Quickstart
 
 ```bash
-# 1. Clone and install
+# Install
+pip install abkit
+
+# Or clone and install in dev mode
 git clone https://github.com/sudikshaacharya1/ab-testing-framework.git
 cd ab-testing-framework
-pip install -r requirements.txt
+pip install -e ".[dev]"
+```
 
+```python
+from abkit import Experiment, ExperimentConfig
+import pandas as pd
+
+config = ExperimentConfig(
+    name="Checkout CTA Test",
+    metric="revenue",
+    covariate="pre_revenue",       # for CUPED variance reduction
+    guardrail_metrics=["latency_ms", "crash_rate"],
+    alpha=0.05,
+)
+
+exp = Experiment(config)
+results = exp.run(pd.read_csv("data/experiment.csv"))
+exp.print_summary(results)
+```
+
+### Or from the CLI
+
+```bash
 # 2. Run on your data
 python -m src.experiment \
   --data your_experiment.csv \

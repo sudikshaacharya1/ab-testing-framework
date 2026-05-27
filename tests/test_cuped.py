@@ -4,7 +4,7 @@ Tests for CUPED variance reduction (src/stats/cuped.py).
 
 import numpy as np
 import pytest
-from src.stats.cuped import cuped_adjust, variance_reduction_factor, _estimate_theta
+from abkit.stats.cuped import cuped_adjust, variance_reduction_factor, _estimate_theta
 
 
 class TestEstimateTheta:

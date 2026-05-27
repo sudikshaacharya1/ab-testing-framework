@@ -4,7 +4,7 @@ Tests for sequential (mSPRT) testing (src/stats/sequential.py).
 
 import numpy as np
 import pytest
-from src.stats.sequential import msprt_test, sequential_boundaries
+from abkit.stats.sequential import msprt_test, sequential_boundaries
 
 
 class TestMsprtTest:
