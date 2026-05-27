@@ -38,6 +38,10 @@ from typing import Tuple
 
 import numpy as np
 
+from src.logger import get_logger
+
+logger = get_logger(__name__)
+
 
 def cuped_adjust(
     control_y: np.ndarray,
@@ -96,6 +100,16 @@ def cuped_adjust(
 
     theta = _estimate_theta(all_y, all_x)
     x_mean = np.mean(all_x)
+
+    logger.debug(
+        "CUPED theta estimated",
+        extra={
+            "theta": round(float(theta), 6),
+            "x_mean": round(float(x_mean), 4),
+            "n_control": len(control_y),
+            "n_treatment": len(treatment_y),
+        },
+    )
 
     control_y_adj = control_y - theta * (control_x - x_mean)
     treatment_y_adj = treatment_y - theta * (treatment_x - x_mean)

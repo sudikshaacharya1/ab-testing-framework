@@ -42,6 +42,10 @@ import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats
 
+from src.logger import get_logger
+
+logger = get_logger(__name__)
+
 
 def check_guardrails(
     data: pd.DataFrame,
@@ -115,10 +119,21 @@ def check_guardrails(
 
     results: Dict[str, bool] = {}
     for metric in guardrail_metrics:
-        degraded = raw_directions[metric]
+        degraded   = raw_directions[metric]
         significant = adjusted[metric] < alpha
-        # FAIL = degraded AND significant
-        results[metric] = not (degraded and significant)
+        passed     = not (degraded and significant)
+        results[metric] = passed
+        logger.debug(
+            "Guardrail checked",
+            extra={
+                "metric": metric,
+                "raw_p_value": round(raw_pvalues[metric], 6),
+                "adjusted_p_value": round(adjusted[metric], 6),
+                "is_degraded": degraded,
+                "is_significant": significant,
+                "status": "PASS" if passed else "FAIL",
+            },
+        )
 
     return results
 

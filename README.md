@@ -27,6 +27,7 @@ This framework exists to close that gap. It gives any team the same statistical 
 | "How many users do we actually need?" | Power analysis & MDE calculator | `src/stats/power.py` |
 | "The primary metric is up but did we break anything?" | Automated guardrail metric checks with Holm-Bonferroni correction | `src/stats/guardrails.py` |
 | "Users are just excited because it's new" | Novelty effect detection and late-cohort correction | `src/novelty/correction.py` |
+| "I need to share results with non-technical stakeholders" | Self-contained HTML report with charts and verdict | `src/reporting.py` |
 
 ---
 
@@ -34,7 +35,7 @@ This framework exists to close that gap. It gives any team the same statistical 
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/your-username/ab-testing-framework.git
+git clone https://github.com/sudikshaacharya1/ab-testing-framework.git
 cd ab-testing-framework
 pip install -r requirements.txt
 
@@ -45,7 +46,12 @@ python -m src.experiment \
   --covariate pre_revenue \
   --guardrails latency_ms crash_rate \
   --alpha 0.05 \
-  --name "Checkout CTA Test"
+  --name "Checkout CTA Test" \
+  --report reports/results.html
+
+# 3. Control logging
+LOG_LEVEL=DEBUG python -m src.experiment ...          # verbose, human-readable
+LOG_FORMAT=json LOG_FILE=logs/run.log python -m src.experiment ...  # structured JSON to file
 ```
 
 ### Example Output
@@ -75,6 +81,24 @@ Your CSV just needs a `variant` column (`"control"` or `"treatment"`) plus whate
 
 ## Features
 
+### Structured Logging
+Every module logs to stdout with consistent fields — experiment name, metric values, timing, and decisions. Configurable via environment variables:
+
+```bash
+LOG_LEVEL=DEBUG    # DEBUG | INFO | WARNING | ERROR
+LOG_FORMAT=json    # json (for log aggregators) | text (for humans)
+LOG_FILE=logs/run.log  # optional rotating file (10MB × 5 backups)
+```
+
+JSON log lines plug directly into Datadog, Splunk, CloudWatch, or any log aggregator.
+
+### HTML Report
+Generate a self-contained, shareable report with one flag:
+```bash
+python -m src.experiment ... --report reports/results.html
+```
+The report includes the verdict (Ship / Fix / Extend), metric cards, distribution charts, power curve, and guardrail status — all embedded in a single HTML file with no external dependencies.
+
 ### CUPED Variance Reduction
 Pre-experiment data is the most underused asset in experimentation. If your users had revenue last month, that number is a strong predictor of revenue this month — before you ever ran a test. CUPED exploits that correlation to shrink metric variance, which means you can detect the same effect with fewer users. A covariate with ρ = 0.7 cuts required sample size by ~51%.
 
@@ -100,6 +124,8 @@ New UI, new feature — users engage with it more because it's *different*, not 
 ab-testing-framework/
 ├── src/
 │   ├── experiment.py        # Core orchestrator + CLI entry point
+│   ├── logger.py            # Structured logging (text + JSON, file rotation)
+│   ├── reporting.py         # Self-contained HTML report generator
 │   ├── stats/
 │   │   ├── cuped.py         # CUPED variance reduction
 │   │   ├── sequential.py    # mSPRT sequential testing
@@ -113,6 +139,7 @@ ab-testing-framework/
 │   └── 02_sequential_testing_demo.ipynb  # mSPRT vs peeking simulation
 ├── data/
 │   └── sample_experiment.csv          # Try it immediately
+├── reports/                 # HTML reports output here
 └── docs/
     └── methodology.md       # Full statistical methodology with math
 ```
