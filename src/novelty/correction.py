@@ -43,6 +43,10 @@ import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats
 
+from src.logger import get_logger
+
+logger = get_logger(__name__)
+
 
 def detect_novelty_effect(
     data: pd.DataFrame,
@@ -126,12 +130,24 @@ def detect_novelty_effect(
     _, p_early = sp_stats.ttest_ind(trt_early, ctrl_early)
     _, p_late = sp_stats.ttest_ind(trt_late, ctrl_late)
 
-    # Novelty detected if early is significant but late is not, and early > late
     novelty_flagged = (
         p_early < alpha
         and p_late >= alpha
         and early_effect > late_effect
     )
+
+    logger.debug(
+        "Novelty effect check complete",
+        extra={
+            "early_effect": round(early_effect, 4),
+            "late_effect":  round(late_effect, 4),
+            "p_early":      round(p_early, 4),
+            "p_late":       round(p_late, 4),
+            "threshold":    float(threshold),
+            "novelty_detected": novelty_flagged,
+        },
+    )
+
     return bool(novelty_flagged)
 
 

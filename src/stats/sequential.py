@@ -43,6 +43,10 @@ from typing import List, Tuple
 import numpy as np
 from scipy import stats as sp_stats
 
+from src.logger import get_logger
+
+logger = get_logger(__name__)
+
 
 def msprt_test(
     control: np.ndarray,
@@ -119,6 +123,17 @@ def msprt_test(
                      * np.exp(0.5 * kappa * t_stat ** 2))
 
     p_value = min(1.0, 1.0 / lambda_t) if lambda_t > 0 else 1.0
+
+    logger.debug(
+        "mSPRT computed",
+        extra={
+            "n_control": n_c,
+            "n_treatment": n_t,
+            "delta_hat": round(float(delta_hat), 6),
+            "lambda_t": round(float(lambda_t), 4),
+            "p_value": round(float(p_value), 6),
+        },
+    )
 
     return p_value, lambda_t
 
