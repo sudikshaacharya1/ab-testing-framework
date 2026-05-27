@@ -146,6 +146,27 @@ ab-testing-framework/
 
 ---
 
+## Comparing Multiple Experiments
+
+Run N experiments in one call and get a single comparison dashboard:
+
+```python
+from src.compare import ExperimentComparison
+from src.experiment import ExperimentConfig
+import pandas as pd
+
+runs = [
+    (ExperimentConfig(name="Checkout CTA", metric="revenue", covariate="pre_revenue"), pd.read_csv("data/case1.csv")),
+    (ExperimentConfig(name="Homepage Banner", metric="revenue", covariate="pre_revenue"), pd.read_csv("data/case2.csv")),
+]
+
+comp = ExperimentComparison(runs)
+comp.run_all()
+comp.save_report("reports/comparison.html")
+```
+
+---
+
 ## Running Tests
 
 ```bash

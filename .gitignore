@@ -55,11 +55,16 @@ coverage.xml
 # macOS
 .DS_Store
 
-# Data files (add explicit exceptions as needed)
-data/
-*.csv
+# Data files — ignore large/raw data but keep sample datasets
 *.parquet
 *.feather
+
+# Allow sample datasets in data/ for demo purposes
+# To ignore your own data files, add them explicitly below
+# e.g. data/my_real_data.csv
+
+# Reports output (generated, not source)
+reports/
 
 # Logs
 *.log
